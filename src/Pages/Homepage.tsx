@@ -24,11 +24,21 @@ const HomePage = () => {
     }
 
     const sensors = useSensors(
-        useSensor(PointerSensor),
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                delay: 250,
+                tolerance: 1
+              },
+        }),
         useSensor(KeyboardSensor,{
             coordinateGetter: sortableKeyboardCoordinates
         }),
-        useSensor(TouchSensor)
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 250,
+                tolerance: 1
+              },
+        })
     )   
 
     return (

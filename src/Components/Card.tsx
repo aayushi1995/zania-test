@@ -40,7 +40,7 @@ const Card: React.FC<CardProps> = ({id, title, imgUrl}) => {
 
     return (
         <>
-            <div ref={setNodeRef} onClick={handleCardClick} {...attributes} {...listeners} style={style} className='shadow-lg p-2 cursor-pointer' tabIndex={0} >
+            <div ref={setNodeRef} onClick={handleCardClick} {...attributes} {...listeners} style={style} className='shadow-lg p-2 cursor-pointer touch-none' tabIndex={0} >
                 <div>{title}</div>
                 <img src={imgUrl}/>
             </div>
