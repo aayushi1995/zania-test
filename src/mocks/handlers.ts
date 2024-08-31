@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
 import data from '../assets/data.json'
-import { convertArrayToObject, convertObjectToArray } from '../utils'
+import { convertArrayToObject } from '../utils'
 
 export const handlers = [
 
