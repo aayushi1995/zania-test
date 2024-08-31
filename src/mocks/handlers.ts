@@ -26,9 +26,7 @@ export const handlers = [
 
   http.put('/updatepositions', async ({ request }) => {
     try {
-
       const data = await request.json()
-      console.log(data)
       // fetch data from local storage and update the data and store in the local storage
       let datafromLocalStorage = localStorage.getItem('data')
       datafromLocalStorage = datafromLocalStorage && JSON.parse(datafromLocalStorage)

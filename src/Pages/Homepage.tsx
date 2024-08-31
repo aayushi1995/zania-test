@@ -1,119 +1,43 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import Card from '../components/Card'
-import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor, useSensors } from '@dnd-kit/core'
-import { SortableContext, arrayMove, horizontalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { getDataId, swapPositions } from '../utils'
-import { Data } from '../types/Data'
-
-
-
+import Card from '../components/Card';
+import useData from '../hooks/useData';
+import { useDragAndDrop } from '../hooks/useDragAndDrop';
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 
 const HomePage = () => {
-    
-    const [data, setData] = useState<Data[] | null>(null)
-
-    const dataRef = useRef<Data[] | null>(null);
-    useEffect(() => {
-        dataRef.current = data;
-      }, [data]);
-
-
-    const handleDragEnd = (event: DragEndEvent ) => {
-        const {active, over} = event
-        if(active?.id === over?.id) return 
-     
-            setData((data) => {
-            const original = getDataId(active?.id, data)
-            const newPosition = getDataId(over?.id, data)
-            const newArray = data !== null && arrayMove(data, original, newPosition)
-            const swapedArray = swapPositions(newArray, original, newPosition)
-            return swapedArray
-        })
-        
-    }
-
-    const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: {
-                delay: 250,
-                tolerance: 1
-              },
-        }),
-        useSensor(KeyboardSensor,{
-            coordinateGetter: sortableKeyboardCoordinates
-        }),
-        useSensor(TouchSensor, {
-            activationConstraint: {
-                delay: 250,
-                tolerance: 1
-              },
-        })
-    )   
-
-    const getData = useCallback(async () => {
-        try {
-          const response = await fetch('/getdata');
-          if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
-          }
-          const result = await response.json();
-          setData(result.data);
-
-          console.log('Fetched successful:', result.data, response.status);
-          
-        } catch (error) {
-          console.error('Failed to fetch data:', error);
-        }
-      }, []);
-
-    const updatePositions = useCallback(async () => {
-        if (!dataRef.current) return;
-        try {
-          const request = new Request('/updatepositions', {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataRef.current),
-          });
-    
-          const response = await fetch(request);
-          if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
-          }
-          console.log('Update successful:', response.status);
-        } catch (error) {
-          console.error('Failed to update data:', error);
-        }
-      }, []);
-    
-    useEffect(() => {
-        getData()
-        const interval = setInterval(() => {
-            updatePositions()
-        },5000)
-        return () => clearInterval(interval)
-    },[])
+    const { data, loading, error, updateData } = useData();
+    const { DndContextComponent, SortableContextComponent } = useDragAndDrop({ data, updateData });
 
     return (
-        <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-        <div className='grid grid-cols-3 gap-3'>
-            {data ? <SortableContext items={data} strategy={horizontalListSortingStrategy}>
-            {data !== null && data?.map(({id, ...props}) => (
-               <Card {...props} id={id} key={id}/>
-            ))}
-            </SortableContext>
-            : 'loading'}
-        </div>
-        </DndContext>
-    )
-}
+        <ErrorBoundary>
+            <DndContextComponent>
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {loading ? (
+                            <div className="col-span-full">Loading...</div>
+                        ) : error ? (
+                            <div className="col-span-full text-red-500">{error}</div>
+                        ) : data ? (
+                            <SortableContextComponent>
+                                {data.map(({ id, ...props }) => (
+                                    <Card {...props} id={id} key={id} />
+                                ))}
+                            </SortableContextComponent>
+                        ) : (
+                            <div className="col-span-full">No data available</div>
+                        )}
+                    </div>
+                </div>
+            </DndContextComponent>
+        </ErrorBoundary>
+    );
+};
 
-export default HomePage
+export default HomePage;
 
-// 1. Create a customHook that does all the API calls.
-// 2. Modify the custom hook, and compare it with the current data and optimise the current calculation.
-// 3. Add a loading state.
-// 4. Add an Error boundary.
-// 5. Add loader in images .
-// 6. Make it responsive.
+
+// 1. Add Loader in Images
+// 2. Calculate the positions and only send put request in case there are some changes
+// 3. add Create, delete API
+// 4. Add Last Saved time
+
+
