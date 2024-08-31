@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { Data } from '../types/Data'; // Ensure this import matches your types
+import { getChangedPositions } from '../utils';
 
 const useData = () => {
     const [data, setData] = useState<Data[] | null>(null);
@@ -7,8 +8,10 @@ const useData = () => {
     const [error, setError] = useState<string | null>(null);
 
     const dataRef = useRef<Data[] | null>(null);
+    const initialDataStateRef = useRef<Data[] | null>(null);
 
     useEffect(() => {
+        initialDataStateRef.current = dataRef.current
         dataRef.current = data;
     }, [data]);
 
@@ -32,15 +35,16 @@ const useData = () => {
     }, []);
 
     const updatePositions = useCallback(async () => {
-        console.log(dataRef.current)
         if (!dataRef.current) return;
+        const movedElements = getChangedPositions(dataRef?.current);
+        if (!movedElements) return;
         try {
             const request = new Request('/updatepositions', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(dataRef.current),
+                body: JSON.stringify(movedElements),
             });
 
             const response = await fetch(request);
