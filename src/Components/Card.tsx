@@ -1,16 +1,9 @@
 import { useSortable } from '@dnd-kit/sortable'
 import {CSS } from '@dnd-kit/utilities'
 import React, { useEffect } from 'react'
+import { Data } from '../types/Data'
 
-type CardProps = {
-    id: string
-    type?: string
-    title: string
-    position: number
-    imgUrl: string
-}
-
-const Card: React.FC<CardProps> = ({id, title, imgUrl}) => {
+const Card: React.FC<Data> = ({id, title, imgUrl}) => {
 
     const [showFullScreen, setShowFullScreen] = React.useState<boolean>(false)
     const {setNodeRef, attributes, listeners, transform, transition}  =  useSortable({id})
