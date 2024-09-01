@@ -39,9 +39,4 @@ const HomePage = () => {
 export default HomePage;
 
 
-// 1. Add Loader in Images
-// 2. Calculate the positions and only send put request in case there are some changes
-// 3. add Create, delete API
-// 4. Add Last Saved time
-
 
