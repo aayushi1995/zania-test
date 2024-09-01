@@ -33,11 +33,17 @@ const useData = () => {
     }, []);
 
     const updatePositions = useCallback(async () => {
-       
         if (!dataRef.current) return;
-
+        if(initialDataStateRef.current === null) {
+            initialDataStateRef.current = dataRef.current
+            return
+        }
         const movedElements = getChangedPositions(dataRef.current, initialDataStateRef.current);
+
         if(!movedElements || movedElements?.length === 0) return;
+
+        console.log(movedElements)
+
         try {
             const request = new Request('/updatepositions', {
                 method: 'PUT',
@@ -52,8 +58,8 @@ const useData = () => {
                 throw new Error(`API error: ${response.status}`);
                 
             }
-            initialDataStateRef.current = dataRef.current;
             console.log('Update successful:', response.status);
+            initialDataStateRef.current = dataRef.current;
 
         } catch (error) {
 
@@ -63,14 +69,14 @@ const useData = () => {
     }, []);
 
     useEffect(() => {
-        fetchData();
+        fetchData();        
         const interval = setInterval(() => {
             updatePositions();
         }, 5000);
         return () => {
             clearInterval(interval);
         }
-    }, [fetchData, updatePositions]);
+    }, []);
 
     return { data, loading, error, updateData: setData }; // Expose a function to update data
 };

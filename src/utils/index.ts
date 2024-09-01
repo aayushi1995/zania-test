@@ -12,7 +12,7 @@ export const getDataId = (id: string, data: DataType[]) => data?.findIndex((item
 
 export const getChangedPositions = (currentData: DataType[], lastDataState: DataType[] | null ) => {
     
-    if(lastDataState === null) return currentData?.map((item) => ({id: item.id, position: item.position}))
+    if(lastDataState === null) return []
 
     let movedElements: any = []
     

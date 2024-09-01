@@ -46,6 +46,7 @@ export const handlers = [
       })
 
         const updatedObject = updatePositionsToObject(payload, datafromDB)
+        
         localStorage.setItem('data', JSON.stringify(updatedObject))
         return HttpResponse.json({
           status: 'ok',
