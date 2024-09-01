@@ -2,6 +2,7 @@
 import ReactDOM from 'react-dom'
 import App from './App'
 import './index.css'
+import { createRoot } from 'react-dom/client'
  
 async function enableMocking() {
   if (process.env.NODE_ENV !== 'development') {
@@ -14,7 +15,9 @@ async function enableMocking() {
   // once the Service Worker is up and ready to intercept requests.
   return worker.start()
 }
- 
+
+const root = createRoot(document.getElementById('root') as HTMLElement)
+
 enableMocking().then(() => {
-  ReactDOM.render(<App />, document.getElementById('root'))
+  root.render(<App />); 
 })
