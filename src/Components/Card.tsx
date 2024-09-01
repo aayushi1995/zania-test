@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable'
 import {CSS } from '@dnd-kit/utilities'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { DataType } from '../types/Data'
 
 const Card: React.FC<DataType> = ({id, title, imgUrl}) => {

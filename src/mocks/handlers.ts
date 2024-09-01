@@ -2,11 +2,10 @@ import { http, HttpResponse } from 'msw'
 import data from '../assets/data.json'
 import { convertArrayToObject, updatePositionsToObject } from '../utils'
 import { DataType } from '../types/Data'
-import { Data } from '@dnd-kit/core'
 
 export const handlers = [
 
-  http.get('/getdata', () => {
+  http.get('http://localhost:8080/getdata', () => {
 
     let datafromLocalStorage = localStorage.getItem('data')
 
@@ -30,7 +29,7 @@ export const handlers = [
     })
   }),
 
-  http.put('/updatepositions', async ({ request }) => {
+  http.put('http://localhost:8080/updatepositions', async ({ request }) => {
     try {
       const payload = await request.json()
 
