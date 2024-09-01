@@ -36,11 +36,11 @@ export const useDragAndDrop = ({ data, updateData }: UseDragAndDropProps) => {
         updateData((data) => {
             if (!data) return null;
             // TODO: handle type issues
-            const original = getDataId(active?.id.toString(), data);
-            const newPosition = over?.id && getDataId(over?.id?.toString(), data);
-            const newArray = newPosition && arrayMove(data, original, newPosition);
-            const rearrangedArray = newArray && rearrangePositions(newArray)
-            return rearrangedArray || null;
+            const original = getDataId(active?.id, data);
+            const newPosition = getDataId(over?.id, data);
+            const newArray = arrayMove(data, original, newPosition);
+            const rearrangedArray = rearrangePositions(newArray)
+            return rearrangedArray;
         });
     }, [updateData]);
 
