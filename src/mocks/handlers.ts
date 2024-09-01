@@ -5,7 +5,7 @@ import { DataType } from '../types/Data'
 
 export const handlers = [
 
-  http.get('http://localhost:8080/getdata', () => {
+  http.get('/getdata', () => {
 
     let datafromLocalStorage = localStorage.getItem('data')
 
@@ -29,7 +29,7 @@ export const handlers = [
     })
   }),
 
-  http.put('http://localhost:8080/updatepositions', async ({ request }) => {
+  http.put('/updatepositions', async ({ request }) => {
     try {
       const payload = await request.json()
 

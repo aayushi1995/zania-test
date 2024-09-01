@@ -24,7 +24,7 @@ const useData = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch('http://localhost:8080/getdata')
+            const response = await fetch('/getdata')
             
             if (!response.ok) {
                 throw new Error(`API error: ${response.status}`);
@@ -63,7 +63,7 @@ const useData = () => {
         }       
 
         try {
-            const request = new Request('http://localhost:8080/updatepositions', {
+            const request = new Request('/updatepositions', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
