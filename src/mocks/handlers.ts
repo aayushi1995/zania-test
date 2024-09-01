@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw'
 import data from '../assets/data.json'
 import { convertArrayToObject, updatePositionsToObject } from '../utils'
+import { DataType } from '../types/Data'
+import { Data } from '@dnd-kit/core'
 
 export const handlers = [
 
@@ -38,14 +40,14 @@ export const handlers = [
       })
 
       let datafromDB = localStorage.getItem('data')
-      datafromDB = datafromDB && JSON.parse(datafromDB)
+      let dataObjectfromDB = datafromDB && JSON.parse(datafromDB) as Record<number, DataType>
 
       if(!datafromDB) return HttpResponse.json({
         status: 'ok',
         message: 'Data not found in local storage, Please clear your local Storage and reload the application'
       })
 
-        const updatedObject = updatePositionsToObject(payload, datafromDB)
+        const updatedObject = dataObjectfromDB && updatePositionsToObject(payload, dataObjectfromDB)
         
         localStorage.setItem('data', JSON.stringify(updatedObject))
         return HttpResponse.json({
@@ -62,34 +64,52 @@ export const handlers = [
 
   http.post('/createdata', async ({ request }) => {
 
-    const data = await request.json()
+    // TODO: handletype issue everywhere
+    const data = await request.json() as DataType[]
 
     if(!data) return HttpResponse.json({
       status: 'ok',
       message: 'No data to create'
     })
+
+    // TODO: typecheck and validate and add it to localStorage
+    const ObjectedData = convertArrayToObject(data)
+    localStorage.setItem('data', JSON.stringify(ObjectedData))
     
-    // validate and add the data to the local storage
+    
     return HttpResponse.json({
       status: 'ok',
+      message: 'Data created successfully'
     })
   }),
 
   http.delete('/deletedata', async ({ request }) => {
+   
     const id = await request.json()
+    
+    const datafromLocalStorage = localStorage.getItem('data')
+     // TODO: handle type issues
+    const parsedData = datafromLocalStorage && JSON.parse(datafromLocalStorage) as DataType[]
 
-    // take a list of ids and delete them
+    if(!id || !parsedData) return HttpResponse.json({
+      status: 'ok',
+      message: !id ? 'No id provided' : 'No data to delete'
+    })
+    
+   
+    let targetIndex = Object.values(parsedData).findIndex((item: DataType) => item?.id === id)
+
+    if(targetIndex === -1) return HttpResponse.json({
+      status: 'ok',
+      message: 'id not found'
+    })
+    delete parsedData[targetIndex]
+
+    localStorage.setItem('data', JSON.stringify(parsedData))
 
     return HttpResponse.json({
       status: 'ok',
+      message: "Successfully deleted"
     })
   })
-
-
 ]
-
-/*
-update API call,
-create,
-delete
-*/

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { DataType } from '../types/Data'; // Ensure this import matches your types
-import {  getChangedPositions } from '../utils';
+import { DataType, InitialDataState } from '../types/Data'; // Ensure this import matches your types
+import { getChangedPositions } from '../utils';
 
 const useData = () => {
     const [data, setData] = useState<DataType[] | null>(null);
@@ -8,10 +8,16 @@ const useData = () => {
     const [error, setError] = useState<string | null>(null);
 
     const dataRef = useRef<DataType[] | null>(null);
-    const initialDataStateRef = useRef<DataType[] | null>(null);
+    const initialDataStateRef = useRef<InitialDataState | null>(null);
 
     useEffect(() => {
         dataRef.current = data;
+        if(data && data.length > 0 && initialDataStateRef.current === null){
+            initialDataStateRef.current = {
+                data: data || [],
+                time: new Date().getTime()
+            }
+        }
     }, [data]);
 
     const fetchData = useCallback(async () => {
@@ -24,25 +30,37 @@ const useData = () => {
             }
             const result = await response.json();
             setData(result.data);
+            setLoading(false)
+      
+
         } catch (error) {
             setError(`Failed to fetch data: ${error}`);
             console.error('Failed to fetch data:', error);
+            setLoading(false)
+            
         } finally {
             setLoading(false);
         }
     }, []);
 
     const updatePositions = useCallback(async () => {
-        if (!dataRef.current) return;
-        if(initialDataStateRef.current === null) {
-            initialDataStateRef.current = dataRef.current
-            return
+
+        setLoading(true);
+        setError(null);
+
+        if (!dataRef.current || !initialDataStateRef.current) {
+            setLoading(false);
+            return;
+        };
+        
+        const movedElements = getChangedPositions(dataRef.current, initialDataStateRef.current.data);
+
+        if(!movedElements || movedElements?.length === 0) {
+            setLoading(false);
+            return;
         }
-        const movedElements = getChangedPositions(dataRef.current, initialDataStateRef.current);
 
-        if(!movedElements || movedElements?.length === 0) return;
-
-        console.log(movedElements)
+        console.log('-----moved elements',movedElements)
 
         try {
             const request = new Request('/updatepositions', {
@@ -59,12 +77,21 @@ const useData = () => {
                 
             }
             console.log('Update successful:', response.status);
-            initialDataStateRef.current = dataRef.current;
 
+            initialDataStateRef.current = {
+                data: dataRef.current,
+                time: new Date().getTime()
+            }
+            setLoading(false)
+            setError(null)
+        
         } catch (error) {
-
+            setLoading(false)
             setError(`Failed to update data: ${error}`);
             console.error('Failed to update data:', error);
+          
+        } finally {
+            setLoading(false);
         }
     }, []);
 
@@ -75,10 +102,11 @@ const useData = () => {
         }, 5000);
         return () => {
             clearInterval(interval);
+            updatePositions();
         }
     }, []);
 
-    return { data, loading, error, updateData: setData }; // Expose a function to update data
+    return { data, loading, error, updateData: setData, lastSave: initialDataStateRef.current?.time }; // Expose a function to update data
 };
 
 export default useData;

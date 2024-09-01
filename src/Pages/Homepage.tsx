@@ -4,16 +4,19 @@ import { useDragAndDrop } from '../hooks/useDragAndDrop';
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 
 const HomePage = () => {
-    const { data, loading, error, updateData } = useData();
+    const { data, lastSave, loading, error, updateData } = useData();
     const { DndContextComponent, SortableContextComponent } = useDragAndDrop({ data, updateData });
-    
+        
     return (
         <ErrorBoundary>
             <DndContextComponent>
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {loading ? (
-                            <div className="col-span-full">Loading...</div>
+                            <div className="col-span-full">
+                                <div>Loading...</div>
+                                <div>Last Saved Time: {lastSave && new Date(lastSave).toTimeString()}</div>
+                            </div>
                         ) : error ? (
                             <div className="col-span-full text-red-500">{error}</div>
                         ) : data ? (

@@ -10,14 +10,13 @@ export const swapPositions = (data: any, original: number, newPosition: number) 
 
 export const getDataId = (id: string, data: DataType[]) => data?.findIndex((item) => item.id === id);
 
-export const getChangedPositions = (currentData: DataType[], lastDataState: DataType[] | null ) => {
-    
-    if(lastDataState === null) return []
+export const getChangedPositions = (currentData: DataType[], lastDataState: DataType[] ) => {
 
     let movedElements: any = []
     
     lastDataState?.forEach((element: DataType) => {
         const currentObj = currentData?.find((item) => item.id === element.id);
+
         if(currentObj && currentObj?.position !== element.position){
             movedElements.push({
                 id: element.id,
@@ -44,9 +43,11 @@ export const updatePositionsToObject = (positions: any, data: Record<number, Dat
 
     let newObj = JSON.parse(JSON.stringify(data))
 
+    // handle type issues
     let newArray = Object.values(newObj) as DataType[]
 
     positions?.forEach((element: any ) => {
+        
         let tempObj = newArray?.find((item) => item.id === element.id)
         newObj[element.position] = tempObj
     })

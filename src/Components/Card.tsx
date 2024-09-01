@@ -3,7 +3,7 @@ import {CSS } from '@dnd-kit/utilities'
 import React, { useEffect } from 'react'
 import { DataType } from '../types/Data'
 
-const Card: React.FC<DataType> = ({id, title, imgUrl, position}) => {
+const Card: React.FC<DataType> = ({id, title, imgUrl}) => {
 
     const [showFullScreen, setShowFullScreen] = React.useState<boolean>(false)
     const {setNodeRef, attributes, listeners, transform, transition}  =  useSortable({id})

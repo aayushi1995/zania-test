@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { getDataId, rearrangePositions } from '../utils';
-import { Data } from '../types/Data';
+import { DataType } from '../types/Data';
 
 type UseDragAndDropProps = {
-    data: Data[] | null;
-    updateData: React.Dispatch<React.SetStateAction<Data[] | null>>;
+    data: DataType[] | null;
+    updateData: React.Dispatch<React.SetStateAction<DataType[] | null>>;
 };
 
 export const useDragAndDrop = ({ data, updateData }: UseDragAndDropProps) => {
@@ -35,6 +35,7 @@ export const useDragAndDrop = ({ data, updateData }: UseDragAndDropProps) => {
 
         updateData((data) => {
             if (!data) return null;
+            // TODO: handle type issues
             const original = getDataId(active?.id, data);
             const newPosition = getDataId(over?.id, data);
             const newArray = arrayMove(data, original, newPosition);
