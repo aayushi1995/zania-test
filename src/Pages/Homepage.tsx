@@ -31,6 +31,8 @@ const HomePage = () => {
                     </div>
                 </div>
             </DndContextComponent>
+            <div className='text-center mt-4 text-gray-500 text-sm'>Last Saved Time: {lastSave && new Date(lastSave).toTimeString()}</div>
+
         </ErrorBoundary>
     );
 };
