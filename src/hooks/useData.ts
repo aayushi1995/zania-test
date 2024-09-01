@@ -1,17 +1,16 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Data } from '../types/Data'; // Ensure this import matches your types
-import { getChangedPositions } from '../utils';
+import { DataType } from '../types/Data'; // Ensure this import matches your types
+import {  getChangedPositions } from '../utils';
 
 const useData = () => {
-    const [data, setData] = useState<Data[] | null>(null);
+    const [data, setData] = useState<DataType[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    const dataRef = useRef<Data[] | null>(null);
-    const initialDataStateRef = useRef<Data[] | null>(null);
+    const dataRef = useRef<DataType[] | null>(null);
+    const initialDataStateRef = useRef<DataType[] | null>(null);
 
     useEffect(() => {
-        initialDataStateRef.current = dataRef.current
         dataRef.current = data;
     }, [data]);
 
@@ -25,7 +24,6 @@ const useData = () => {
             }
             const result = await response.json();
             setData(result.data);
-            console.log('Fetched successful:', result.data, response.status);
         } catch (error) {
             setError(`Failed to fetch data: ${error}`);
             console.error('Failed to fetch data:', error);
@@ -35,9 +33,11 @@ const useData = () => {
     }, []);
 
     const updatePositions = useCallback(async () => {
+       
         if (!dataRef.current) return;
-        const movedElements = getChangedPositions(dataRef?.current);
-        if (!movedElements) return;
+
+        const movedElements = getChangedPositions(dataRef.current, initialDataStateRef.current);
+        if(!movedElements || movedElements?.length === 0) return;
         try {
             const request = new Request('/updatepositions', {
                 method: 'PUT',
@@ -50,9 +50,13 @@ const useData = () => {
             const response = await fetch(request);
             if (!response.ok) {
                 throw new Error(`API error: ${response.status}`);
+                
             }
+            initialDataStateRef.current = dataRef.current;
             console.log('Update successful:', response.status);
+
         } catch (error) {
+
             setError(`Failed to update data: ${error}`);
             console.error('Failed to update data:', error);
         }
@@ -63,7 +67,9 @@ const useData = () => {
         const interval = setInterval(() => {
             updatePositions();
         }, 5000);
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+        }
     }, [fetchData, updatePositions]);
 
     return { data, loading, error, updateData: setData }; // Expose a function to update data

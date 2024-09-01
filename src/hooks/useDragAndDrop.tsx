@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, arrayMove, horizontalListSortingStrategy, rectSortingStrategy, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { getDataId, swapPositions } from '../utils';
+import { SortableContext, arrayMove, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { getDataId, rearrangePositions } from '../utils';
 import { Data } from '../types/Data';
 
 type UseDragAndDropProps = {
@@ -38,7 +38,8 @@ export const useDragAndDrop = ({ data, updateData }: UseDragAndDropProps) => {
             const original = getDataId(active?.id, data);
             const newPosition = getDataId(over?.id, data);
             const newArray = arrayMove(data, original, newPosition);
-            return newArray;
+            const rearrangedArray = rearrangePositions(newArray)
+            return rearrangedArray;
         });
     }, [updateData]);
 
@@ -49,7 +50,7 @@ export const useDragAndDrop = ({ data, updateData }: UseDragAndDropProps) => {
             </DndContext>
         ),
         SortableContextComponent: ({ children }: { children: React.ReactNode }) => (
-            <SortableContext items={data || []}>
+            <SortableContext items={data || []} strategy={rectSwappingStrategy}>
                 {children}
             </SortableContext>
         )

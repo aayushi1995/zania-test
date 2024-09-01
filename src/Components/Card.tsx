@@ -1,9 +1,9 @@
 import { useSortable } from '@dnd-kit/sortable'
 import {CSS } from '@dnd-kit/utilities'
 import React, { useEffect } from 'react'
-import { Data } from '../types/Data'
+import { DataType } from '../types/Data'
 
-const Card: React.FC<Data> = ({id, title, imgUrl, position}) => {
+const Card: React.FC<DataType> = ({id, title, imgUrl, position}) => {
 
     const [showFullScreen, setShowFullScreen] = React.useState<boolean>(false)
     const {setNodeRef, attributes, listeners, transform, transition}  =  useSortable({id})
@@ -34,9 +34,10 @@ const Card: React.FC<Data> = ({id, title, imgUrl, position}) => {
     return (
         <>
             <div ref={setNodeRef} onClick={handleCardClick} {...attributes} {...listeners} style={style} className='shadow-lg p-2 cursor-pointer touch-none' tabIndex={0} >
-                <div>{title} {position}</div>
-                <img src={imgUrl}/>
                 
+                <div>{id} - {title}</div>
+                <img src={imgUrl}/>
+                {position}
             </div>
             {showFullScreen && <div className='h-screen w-screen fixed top-0 left-0' tabIndex={0}><img src={imgUrl}/></div>}
         </>

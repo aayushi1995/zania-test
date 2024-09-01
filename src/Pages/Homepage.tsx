@@ -6,7 +6,7 @@ import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 const HomePage = () => {
     const { data, loading, error, updateData } = useData();
     const { DndContextComponent, SortableContextComponent } = useDragAndDrop({ data, updateData });
-
+    
     return (
         <ErrorBoundary>
             <DndContextComponent>

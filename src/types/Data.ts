@@ -1,8 +1,8 @@
-export type Data = {
+export type DataType = {
     id: string
-    type?: string
     title: string
     position: number
     imgUrl: string
+    type?: string
 }
-export type updatedataPayload = Pick<Data, "id" | "position">[];
+export type movedElementsType = Pick<DataType, "id" | "position">[];
