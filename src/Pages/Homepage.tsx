@@ -7,7 +7,7 @@ import Spinner from '../components/Spinner';
 const HomePage = () => {
     const { data, lastSave, loading, error, updateData } = useData();
     const { DndContextComponent, SortableContextComponent } = useDragAndDrop({ data, updateData });
-        
+  
     return (
         <ErrorBoundary>
             {loading && <Spinner/>}
@@ -20,7 +20,7 @@ const HomePage = () => {
                             <>
                             <SortableContextComponent>
                                 {data.map(({ id, ...props }) => (
-                                    <Card {...props} id={id} key={id} />
+                                    <Card key={id} {...props} id={id}/>
                                 ))}
                             </SortableContextComponent>
                             </>
@@ -30,7 +30,7 @@ const HomePage = () => {
                     </div>
                 </div>
             </DndContextComponent>
-            <div className='text-center mt-4 text-gray-500 text-sm'>Last Saved Time: {lastSave && new Date(lastSave).toTimeString()}</div>
+            <div className='text-center mt-4 text-gray-500 text-sm'>{lastSave && `Last Saved Time: `+ new Date(lastSave).toTimeString()}</div>
 
         </ErrorBoundary>
     );

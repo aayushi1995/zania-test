@@ -52,15 +52,13 @@ const useData = () => {
             setLoading(false);
             return;
         };
+
         
         const movedElements = getChangedPositions(dataRef.current, initialDataStateRef.current.data);
-
         if(!movedElements || movedElements?.length === 0) {
             setLoading(false);
             return;
-        }
-
-        console.log('-----moved elements',movedElements)
+        }       
 
         try {
             const request = new Request('/updatepositions', {
@@ -68,7 +66,8 @@ const useData = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(movedElements),
+                /* Sending entire data because wrong calculation was causing a bug*/
+                body: JSON.stringify(dataRef.current),
             });
 
             const response = await fetch(request);
