@@ -34,10 +34,8 @@ const Card: React.FC<DataType> = ({id, title, imgUrl, position}) => {
     return (
         <>
             <div ref={setNodeRef} onClick={handleCardClick} {...attributes} {...listeners} style={style} className='shadow-lg p-2 cursor-pointer touch-none' tabIndex={0} >
-                
-                <div>{id} - {title}</div>
+                <div>{title}</div>
                 <img src={imgUrl}/>
-                {position}
             </div>
             {showFullScreen && <div className='h-screen w-screen fixed top-0 left-0' tabIndex={0}><img src={imgUrl}/></div>}
         </>
