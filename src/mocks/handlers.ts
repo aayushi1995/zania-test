@@ -31,6 +31,12 @@ export const handlers = [
 
   http.put('/updatepositions', async ({ request }) => {
     try {
+
+      // fake timer to mock an actual API and we can see a loader on the screen
+      setTimeout(() => {
+        console.log('executing update positions')
+      },5000)
+
       const payload = await request.json()
 
       if(!payload) return HttpResponse.json({
