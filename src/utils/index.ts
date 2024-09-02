@@ -14,17 +14,15 @@ export const getChangedPositions = (currentData: DataType[], lastDataState: Data
 
     let movedElements: any = []
     
-    lastDataState?.forEach((element: DataType) => {
-        const currentObj = currentData?.find((item) => item.id === element.id);
-
-        if(currentObj && currentObj?.position !== element.position){
+    lastDataState?.forEach((element: DataType, index) => {
+        const currentObj = currentData[index]
+        if(element?.id !== currentObj?.id){
             movedElements.push({
-                id: element.id,
+                id: currentObj.id,
                 position: currentObj.position
             })
         }
     })
-
     return movedElements
 }
 
@@ -44,7 +42,7 @@ export const updatePositionsToObject = (positions: any, data: Record<number, Dat
     let newObj = JSON.parse(JSON.stringify(data))
 
     // handle type issues
-    let newArray = Object.values(newObj) as DataType[]
+    let newArray = Object.values(data) as DataType[]
 
     positions?.forEach((element: any ) => {
         

@@ -57,6 +57,7 @@ const useData = () => {
 
         
         const movedElements = getChangedPositions(dataRef.current, initialDataStateRef.current.data);
+
         if(!movedElements || movedElements?.length === 0) {
             setLoading(false);
             return;
@@ -69,7 +70,7 @@ const useData = () => {
                     'Content-Type': 'application/json',
                 },
                 /* Sending entire data because wrong calculation was causing a bug*/
-                body: JSON.stringify(dataRef.current),
+                body: JSON.stringify(movedElements),
             });
 
             const response = await fetch(request);
