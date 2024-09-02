@@ -31,13 +31,13 @@ export const useDragAndDrop = ({ data, updateData }: UseDragAndDropProps) => {
     const handleDragEnd = useCallback((event: DragEndEvent) => {
         
         const { active, over } = event;
-        if (active?.id === over?.id) return;
-
+        if (active?.id === over?.id || over?.id == null) return;
+        
         updateData((data) => {
             if (!data) return null;
             // TODO: handle type issues
-            const original = getDataId(active?.id, data);
-            const newPosition = getDataId(over?.id, data);
+            const original = getDataId(active.id.toString(), data);
+            const newPosition = getDataId(over.id.toString(), data);
             const newArray = arrayMove(data, original, newPosition);
             const rearrangedArray = rearrangePositions(newArray)
             return rearrangedArray;
