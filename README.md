@@ -33,6 +33,32 @@ https://www.loom.com/share/c1ae63d7b65f49b18db823d8a96b134a?sid=f7a28615-8a18-43
 6. /types has all the types file.
 7. /utils has all the basic array manipulation functions.
 
+
+### System Design
+1. The data stored in the state is an array of objects because dndkit library takes an array of objects and then gives an array of objects back on dragging and dropping of the blocks.
+2. I change the value of the positions key in each of the object and gives them correct positions.
+3. I update the state and the currentData.ref with the updated array of objects.
+4. I have used `dataRef` because setinterval took the stale copy of state and kept calling update API with the stale state data due to closures.
+5. Since refs arent directly linked to components rendering cycle, we can use ref for storing the consistent data states across renders.
+6. I have added a delay of `250ms` on the dragging element because onDrag was preventing `onClick` event from happening because of event bubbling hence addding a delay in emitting `onDrag` event helps us use both the events seamlessly.
+7. I have created another that `initialDataStateRef` ref for remembering the last updated data state and time for comparing the data before the update API call to prevent unneccessary updates.
+8. I have stored the data in key value pairs in the Localstorage to help us do faster updation. 
+I was initially sending only the elements whose positions have changed. for example the array of elements that got changed would be 
+```
+[{
+    id: 'data-0',
+    position: 3
+},
+{
+    id: 'data-3',
+    position: 0
+}
+]
+```
+and then again recreate the Object to store the updated positions in the localstorage.
+It was working fine but it caused edge case bugs on diagonal drag and drop of elements, so for now I send the entire array with updated positions to the BE and it isnt causing any issues.
+
+
 ### Libraries used
 1. @dnd-kit for drag and drop
 2. @tailwind for css
