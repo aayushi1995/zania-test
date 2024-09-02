@@ -1,6 +1,7 @@
 
 # SORTING BLOCKS
-Sortable blocks that can sorted via drag and drop. Users can view the images in fullscreen by clicking anywhere on the block and esc for exiting the full screen
+Sortable blocks that can sorted via drag and drop. Users can view the images in fullscreen by clicking anywhere on the block and esc for exiting the full screen.
+Deployed at https://zania-test-one.vercel.app/
 
 ## Setting up and running it locally via Docker
 1. git clone https://github.com/aayushi1995/zania-test.git
@@ -20,8 +21,11 @@ https://www.loom.com/share/c1ae63d7b65f49b18db823d8a96b134a?sid=f7a28615-8a18-43
 
 ### Future Scope 
  
-1. Better handling of the update API. 
+1. Better handling of the update API, just passing the changed data should handle the data properly.
 2. Better Placeholder UI when any Error occurs in the UI
+3. Drag and Drop functinalities in case of diagonally swapping the elements.
+4. Preloading individual images for the first time.
+
 
 ### Code structure
 1. /assets has data.json
